@@ -22,7 +22,7 @@ endif()
 
 # Compile external dependencies
 add_subdirectory (external)
-
+add_subdirectory (common)
 # On Visual 2005 and above, this module can set the debug working directory
 cmake_policy(SET CMP0026 OLD)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/external/rpavlik-cmake-modules-fe2273")
@@ -43,12 +43,14 @@ include_directories(
         external/assimp-3.0.1270/include/
         external/bullet-2.81-rev2613/src/
         .
+        common/
 )
 
 set(ALL_LIBS
         ${OPENGL_LIBRARY}
         glfw
         GLEW_1130
+        common
 )
 
 add_definitions(
@@ -73,13 +75,18 @@ create_target_launcher(createwindow WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DI
 # createvertex
 add_executable(createvertex
         createvertex/main.cpp
-
-        createvertex/SimpleFragmentShader.fragmentshader
-        createvertex/SimpleVertexShader.vertexshader
 )
 target_link_libraries(createvertex
         ${ALL_LIBS}
 )
+
+file(COPY
+    ${PROJECT_SOURCE_DIR}/createvertex/SimpleVertexShader.vertexshader
+    ${PROJECT_SOURCE_DIR}/createvertex/SimpleFragmentShader.fragmentshader
+    DESTINATION
+    ${PROJECT_BINARY_DIR}/
+)
+
 # Xcode and Visual working directories
 set_target_properties(createvertex PROPERTIES XCODE_ATTRIBUTE_CONFIGURATION_BUILD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/createvertex/")
 create_target_launcher(createvertex WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/createvertex/")
@@ -90,6 +97,12 @@ add_executable(creatematrices
 )
 target_link_libraries(creatematrices
         ${ALL_LIBS}
+)
+file(COPY
+    ${PROJECT_SOURCE_DIR}/creatematrices/SimpleTransform.vertexshader
+    ${PROJECT_SOURCE_DIR}/creatematrices/SingleColor.fragmentshader
+    DESTINATION
+    ${PROJECT_BINARY_DIR}/
 )
 # Xcode and Visual working directories
 set_target_properties(creatematrices PROPERTIES XCODE_ATTRIBUTE_CONFIGURATION_BUILD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/creatematrices/")
@@ -102,6 +115,12 @@ add_executable(createcube
 )
 target_link_libraries(createcube
         ${ALL_LIBS}
+)
+file(COPY
+    ${PROJECT_SOURCE_DIR}/createcube/TransformVertexShader.vertexshader
+    ${PROJECT_SOURCE_DIR}/createcube/ColorFragmentShader.fragmentshader
+    DESTINATION
+    ${PROJECT_BINARY_DIR}/
 )
 # Xcode and Visual working directories
 set_target_properties(createcube PROPERTIES XCODE_ATTRIBUTE_CONFIGURATION_BUILD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/createcube/")
